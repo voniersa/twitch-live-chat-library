@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+ tlcl-php-cli:
+   build:
+     dockerfile: docker/php/Dockerfile
+     context: .
+   container_name: tlcl-php-cli
+   environment:
+     - XDEBUG_MODE=coverage
+   volumes:
+     - .:/var/www/code:rw

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         bootstrap="vendor/autoload.php"
+         backupStaticAttributes="false"
+         processIsolation="false"
+         stopOnFailure="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         beStrictAboutCoversAnnotation="true"
+         colors="true"
+         verbose="true"
+         executionOrder="default"
+         resolveDependencies="true">
+
+    <testsuites>
+        <testsuite name="unit">
+            <directory suffix=".php">./tests/unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true"
+              includeUncoveredFiles="true"
+              ignoreDeprecatedCodeUnits="false"
+              disableCodeCoverageIgnore="false">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+
+        <report>
+            <html outputDirectory="html-coverage" lowUpperBound="50" highLowerBound="90"/>
+            <text outputFile="php://stdout" showOnlySummary="true"/>
+            <clover outputFile="coverage/clover.xml"/>
+        </report>
+    </coverage>
+</phpunit>
