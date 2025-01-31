@@ -43,7 +43,7 @@ test_unit: composer_install ##run unit tests
 	@echo ""
 	@echo "+++++ Unit Tests +++++"
 	set -e
-	$(TEST-CLI) "$(PHP_BIN) $(PHPUNIT) -c phpunit.xml --coverage-html reports/html"
+	$(TEST-CLI) "$(PHP_BIN) $(PHPUNIT) -c phpunit.xml --coverage-html reports/html --coverage-clover reports/phpunit.coverage.xml"
 	docker-compose down -v
 
 .PHONY: sniff

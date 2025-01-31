@@ -1,0 +1,32 @@
+name: Unit tests
+on: [push]
+
+jobs:
+  unit-tests:
+    name: unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install docker
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+        continue-on-error: false
+      - name: Install docker-compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+        continue-on-error: false
+      - name: Run code sniffer
+        run: make sniff
+      - name: Run unit tests
+        run: make test
+      - name: Upload artifact
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-tests
+          path: reports/phpunit.coverage.xml
+          if-no-files-found: error
