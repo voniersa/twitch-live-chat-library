@@ -8,7 +8,7 @@ use ArrayIterator;
 
 class MessageCollection
 {
-    private array $collection;
+    private array $collection = [];
 
     /**
      * @throws IncorrectDataProvidedException

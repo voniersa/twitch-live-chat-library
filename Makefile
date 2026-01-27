@@ -36,13 +36,12 @@ composer_autoload: build_cli ##composer autoload will be build
 ##@ Testing
 
 .PHONY: test
-test: test_unit ##run all tests
+test: sniff test_unit ##run all tests
 
 .PHONY: test_unit
 test_unit: composer_install ##run unit tests
 	@echo ""
 	@echo "+++++ Unit Tests +++++"
-	set -e
 	$(TEST-CLI) "$(PHP_BIN) $(PHPUNIT) -c phpunit.xml --coverage-html reports/html --coverage-clover reports/phpunit.coverage.xml"
 	docker-compose down -v
 
@@ -50,7 +49,6 @@ test_unit: composer_install ##run unit tests
 sniff: composer_install ##run code sniffer
 	@echo ""
 	@echo "+++++ SNIFFER +++++"
-	set -e
 	docker-compose run --rm --no-deps tlcl-php-cli php vendor/bin/phpcs -w -p -s --standard=codingRuleset.xml src/ tests/
 	docker-compose down -v
 
@@ -60,7 +58,6 @@ sniff: composer_install ##run code sniffer
 sniffer_fix: composer_install ##automatic fixing of some code style errors
 	@echo ""
 	@echo "+++++ SNIFFER FIXER +++++"
-	set -e
 	docker-compose run --rm --no-deps tlcl-php-cli php vendor/bin/phpcbf --standard=codingRuleset.xml src/ tests/
 	docker-compose down -v
 

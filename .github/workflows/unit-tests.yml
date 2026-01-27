@@ -22,7 +22,7 @@ jobs:
       - name: Run code sniffer
         run: make sniff
       - name: Run unit tests
-        run: make test
+        run: make test_unit
       - name: Upload artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
