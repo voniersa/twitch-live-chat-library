@@ -49,7 +49,7 @@ test_unit: composer_install ##run unit tests
 sniff: composer_install ##run code sniffer
 	@echo ""
 	@echo "+++++ SNIFFER +++++"
-	docker-compose run --rm --no-deps tlcl-php-cli php vendor/bin/phpcs -w -p -s --standard=codingRuleset.xml src/ tests/
+	docker-compose run --rm --no-deps tlcl-php-cli php vendor/bin/phpcs -w -p -s --standard=vendor/flyeralarm/php-code-validator/ruleset.xml src/ tests/
 	docker-compose down -v
 
 ##@ Helper
@@ -58,7 +58,7 @@ sniff: composer_install ##run code sniffer
 sniffer_fix: composer_install ##automatic fixing of some code style errors
 	@echo ""
 	@echo "+++++ SNIFFER FIXER +++++"
-	docker-compose run --rm --no-deps tlcl-php-cli php vendor/bin/phpcbf --standard=codingRuleset.xml src/ tests/
+	docker-compose run --rm --no-deps tlcl-php-cli php vendor/bin/phpcbf --standard=vendor/flyeralarm/php-code-validator/ruleset.xml src/ tests/
 	docker-compose down -v
 
 .PHONY: demo

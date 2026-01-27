@@ -73,9 +73,9 @@ class IrcConnector
         $read = [$socketConnection->getResource()];
         $write = null;
         $except = null;
-        
+
         $result = stream_select($read, $write, $except, $timeoutSeconds);
-        
+
         return $result > 0;
     }
 

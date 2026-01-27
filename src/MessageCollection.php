@@ -52,8 +52,8 @@ class MessageCollection
     /**
      * @param Message $Message message that was sent
      */
-    public function add(Message $Message): void
+    public function add(Message $message): void
     {
-        $this->collection[] = $Message;
+        $this->collection[] = $message;
     }
 }
