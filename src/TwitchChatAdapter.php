@@ -87,24 +87,28 @@ class TwitchChatAdapter
         $messageCollection = MessageCollection::fromArray([]);
         $startTime = microtime(true);
         while ($this->verifier->verifyConnection($socketConnection->getResource())) {
+            if (microTime(true) - $startTime >= $disconnect) {
+                return $messageCollection;
+            }
+
+            if (!$this->ircConnector->hasDataAvailable($socketConnection, 1)) {
+                continue;
+            }
+
             $read = $this->ircConnector->fgets($socketConnection);
 
-            if (microTime(true) - $disconnect >= $startTime) {
-                return $messageCollection;
-            } else {
-                if (preg_match("/:(\S+)!\S+@\S+ PRIVMSG (#\S+) :(.*)/i", $read, $match)) {
-                    $message = Message::fromParams(
-                        substr($match[3], 0, -1),
-                        UserName::fromString($match[1]),
-                        ChannelName::fromString($match[2]),
-                    );
-                    $messageCollection->add($message);
-                    $socketConnection->notify($message);
-                }
+            if (preg_match("/:(\S+)!\S+@\S+ PRIVMSG (#\S+) :(.*)/i", $read, $match)) {
+                $message = Message::fromParams(
+                    substr($match[3], 0, -1),
+                    UserName::fromString($match[1]),
+                    ChannelName::fromString($match[2]),
+                );
+                $messageCollection->add($message);
+                $socketConnection->notify($message);
+            }
 
-                if (preg_match("/PING :(.*)/i", $read, $match)) {
-                    $this->ircConnector->fwrite($socketConnection, sprintf("PONG :%s\r\n", $match[1]));
-                }
+            if (preg_match("/PING :(.*)/i", $read, $match)) {
+                $this->ircConnector->fwrite($socketConnection, sprintf("PONG :%s\r\n", $match[1]));
             }
         }
         return $messageCollection;

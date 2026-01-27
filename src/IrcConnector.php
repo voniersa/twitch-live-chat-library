@@ -65,6 +65,22 @@ class IrcConnector
 
     /**
      * @param SocketConnection $socketConnection active connection
+     * @param int $timeoutSeconds timeout in seconds
+     * @return bool true if data is available to read
+     */
+    public function hasDataAvailable(SocketConnection $socketConnection, int $timeoutSeconds = 1): bool
+    {
+        $read = [$socketConnection->getResource()];
+        $write = null;
+        $except = null;
+
+        $result = stream_select($read, $write, $except, $timeoutSeconds);
+
+        return $result > 0;
+    }
+
+    /**
+     * @param SocketConnection $socketConnection active connection
      */
     public function closeConnection(SocketConnection $socketConnection): void
     {

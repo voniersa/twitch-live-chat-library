@@ -70,6 +70,7 @@ class TwitchChatAdapterTest extends TestCase
         $socketConnection->expects($this->once())->method("notify");
 
         $ircConnector = $this->createMock(IrcConnector::class);
+        $ircConnector->method("hasDataAvailable")->willReturn(true);
         $ircConnector->method("fgets")->willReturnCallback(function () {
             switch ($this->counter) {
                 case 1:
@@ -100,5 +101,25 @@ class TwitchChatAdapterTest extends TestCase
         $messageCollection = $this->createAdapter($ircConnector, false)->readLiveChat($socketConnection, 1);
 
         $this->assertEquals($messageCollection, MessageCollection::fromArray([]));
+    }
+
+    public function testReadLiveChatContinuesWhenNoDataAvailable(): void
+    {
+        $socketConnection = $this->createMock(SocketConnection::class);
+        $socketConnection->expects($this->never())->method("notify");
+
+        $callCount = 0;
+        $ircConnector = $this->createMock(IrcConnector::class);
+        $ircConnector->method("hasDataAvailable")->willReturnCallback(function () use (&$callCount) {
+            $callCount++;
+            return false;
+        });
+        $ircConnector->expects($this->never())->method("fgets");
+
+        $messageCollection = $this->createAdapter($ircConnector)->readLiveChat($socketConnection, 1);
+
+        $this->assertInstanceOf(MessageCollection::class, $messageCollection);
+        $this->assertEquals(0, count($messageCollection->getIterator()));
+        $this->assertGreaterThan(0, $callCount);
     }
 }
